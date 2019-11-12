@@ -1,0 +1,8 @@
+.splitFormatter {
+  width: 30%;
+  font-size: 25px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  color: rgb(122, 83, 21);
+}
