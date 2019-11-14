@@ -1,5 +1,9 @@
-import { UPDATE_LOG, UPDATE_SPLIT_LOG } from "../actions/logActions";
-import { Log } from "../../LogTable/LogTable";
+import {
+  UPDATE_LOG,
+  UPDATE_SPLIT_LOG,
+  RESET_LOGS
+} from "../actions/logActions";
+import { Log } from "../../types";
 
 type State = {
   logs: Log[];
@@ -43,6 +47,12 @@ const logReducer = (state: State = initialState, action: ActionType): State => {
             time: payload.time
           }
         ]
+      };
+
+    case RESET_LOGS:
+      return {
+        logs: [],
+        splitLogs: []
       };
 
     default:

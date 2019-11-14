@@ -1,95 +1,104 @@
-//libs
-import React, { Component } from "react";
+// libs
+import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-//src
+// src
 import "./Actions.css";
 import { updateTimerState } from "../redux/actions/timerActions";
 import { updateLog, updateSplitLog } from "../redux/actions/logActions";
 import { EVENTS } from "../constants";
+import { ReduxStoreState } from "../types";
 
-type Props = {
-  timerState: boolean;
-  currentTime: number;
-  updateTimerState: (timerState: boolean) => void;
-  updateLog: (timerAction: string, currentTime: number) => void;
-  updateSplitLog: (timerAction: string, currentTime: number) => void;
+type OwnProps = {
   handleStart: () => void;
   handleStop: () => void;
   handleReset: () => void;
 };
 
-class Actions extends Component<Props> {
-  render() {
-    const {
-      timerState,
-      updateTimerState,
-      currentTime,
-      updateLog,
-      updateSplitLog,
-      handleStart,
-      handleStop,
-      handleReset
-    } = this.props;
+type StoreProps = {
+  timerState: boolean;
+  currentTime: number;
+};
 
-    return (
-      <div className="buttons">
-        {timerState === false ? (
-          <button
-            className="start"
-            onClick={() => {
-              updateTimerState(true);
-              handleStart();
-              updateLog(EVENTS.START, currentTime);
-            }}
-          >
-            Start
-          </button>
-        ) : (
-          <button
-            className="stop"
-            onClick={() => {
-              updateTimerState(false);
-              handleStop();
-              updateLog(EVENTS.PAUSE, currentTime);
-            }}
-          >
-            Pause
-          </button>
-        )}
+type DispatchProps = {
+  updateTimerState: (timerState: boolean) => void;
+  updateLog: (timerAction: string, currentTime: number) => void;
+  updateSplitLog: (timerAction: string, currentTime: number) => void;
+};
 
+type Props = StoreProps & DispatchProps & OwnProps;
+
+const Actions = (props: Props) => {
+  const {
+    timerState,
+    updateTimerState,
+    currentTime,
+    updateLog,
+    updateSplitLog,
+    handleStart,
+    handleStop,
+    handleReset
+  } = props;
+
+  return (
+    <div className="buttons">
+      {timerState === false ? (
         <button
-          className="split"
+          className="start"
           onClick={() => {
-            updateLog(EVENTS.SPLIT, currentTime);
-            updateSplitLog(EVENTS.SPLIT, currentTime);
+            updateTimerState(true);
+            handleStart();
+            updateLog(EVENTS.START, currentTime);
           }}
-          disabled={timerState === false}
         >
-          Split
+          Start
         </button>
-
+      ) : (
         <button
-          className="reset"
+          className="stop"
           onClick={() => {
-            handleReset();
+            updateTimerState(false);
+            handleStop();
+            updateLog(EVENTS.PAUSE, currentTime);
           }}
-          disabled={timerState === true}
         >
-          Reset
+          Pause
         </button>
-      </div>
-    );
-  }
-}
+      )}
 
-const mapStateToProps = ({ timer: { timerState, currentTime } }) => ({
+      <button
+        className="split"
+        onClick={() => {
+          updateLog(EVENTS.SPLIT, currentTime);
+          updateSplitLog(EVENTS.SPLIT, currentTime);
+        }}
+        disabled={timerState === false}
+      >
+        Split
+      </button>
+
+      <button
+        className="reset"
+        onClick={() => {
+          handleReset();
+        }}
+        disabled={timerState === true}
+      >
+        Reset
+      </button>
+    </div>
+  );
+};
+
+const mapStateToProps = ({
+  timer: { timerState, currentTime }
+}: ReduxStoreState): StoreProps => ({
   timerState,
   currentTime
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: any): DispatchProps => {
   return bindActionCreators(
     {
       updateTimerState,
@@ -100,4 +109,7 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Actions);
+export default connect<StoreProps, DispatchProps, OwnProps, ReduxStoreState>(
+  mapStateToProps,
+  mapDispatchToProps
+)(Actions);

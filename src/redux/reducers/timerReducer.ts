@@ -13,14 +13,14 @@ const initialState: State = {
 
 const timerReducer = (
   state: State = initialState,
-  action: { payload: number | string; type: string }
+  action: { payload: number; type: string }
 ): State => {
   const { payload, type } = action;
   switch (type) {
     case UPDATE_TIMER:
       return {
         ...state,
-        currentTime: typeof payload === "number" ? payload : 0
+        currentTime: payload
       };
 
     case UPDATE_TIMER_STATE:

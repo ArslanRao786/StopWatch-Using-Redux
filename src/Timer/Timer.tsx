@@ -1,27 +1,30 @@
 // libs
-import React, { Component } from "react";
+import React from "react";
 import { connect } from "react-redux";
 
-//src
+// src
 import prettyPrintTime from "../utils";
+import { ReduxStoreState } from "../types";
 
-type Props = {
+type StoreProps = {
   currentTime: number;
 };
 
-class Timer extends Component<Props> {
-  render() {
-    const { currentTime } = this.props;
-    return (
-      <div>
-        <h1>{prettyPrintTime(currentTime)}</h1>
-      </div>
-    );
-  }
-}
+type Props = StoreProps;
 
-const mapStateToProps = ({ timer: { currentTime } }) => ({
+const Timer = (props: Props) => {
+  const { currentTime } = props;
+  return (
+    <div>
+      <h1>{prettyPrintTime(currentTime)}</h1>
+    </div>
+  );
+};
+
+const mapStateToProps = ({
+  timer: { currentTime }
+}: ReduxStoreState): StoreProps => ({
   currentTime
 });
 
-export default connect(mapStateToProps)(Timer);
+export default connect<StoreProps, ReduxStoreState>(mapStateToProps)(Timer);

@@ -1,29 +1,31 @@
-//libs
-import React, { Component } from "react";
+// libs
+import React from "react";
 import { connect } from "react-redux";
 
-//src
+// src
 import prettyPrintTime from "../utils";
 import "./SplitTimer.css";
-import { Log } from "../LogTable/LogTable";
+import { ReduxStoreState } from "../types";
 
-type Props = {
-  splitLogs: Log[];
+type StoreProps = { splitLogs: any };
+
+type Props = StoreProps;
+
+const SplitTimer = (props: Props) => {
+  const { splitLogs } = props;
+  return splitLogs.map((item: { time: number }) => (
+    <div className="splitFormatter">
+      <td>{prettyPrintTime(item.time)}</td>
+    </div>
+  ));
 };
 
-class SplitTimer extends Component<Props> {
-  render() {
-    const { splitLogs } = this.props;
-    return splitLogs.map(item => (
-      <div className="splitFormatter">
-        <td>{prettyPrintTime(item.time)}</td>
-      </div>
-    ));
-  }
-}
-
-const mapStateToProps = ({ log: { splitLogs } }) => ({
+const mapStateToProps = ({
+  log: { splitLogs }
+}: ReduxStoreState): StoreProps => ({
   splitLogs
 });
 
-export default connect(mapStateToProps)(SplitTimer);
+export default connect<StoreProps, ReduxStoreState>(mapStateToProps)(
+  SplitTimer
+);

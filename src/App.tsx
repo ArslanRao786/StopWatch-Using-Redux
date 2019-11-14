@@ -1,83 +1,88 @@
-//libs
-import React, { Component } from "react";
+// libs
+import React, { useRef } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-//src
+// src
 import "./App.css";
 import Timer from "./Timer";
 import Actions from "./Actions";
 import LogTable from "./LogTable";
 import SplitTimer from "./SplitTimer";
 import { updateTimer, resetTimer } from "./redux/actions/timerActions";
+import { resetLogs } from "./redux/actions/logActions";
+import { ReduxStoreState } from "./types";
 
-type State = {
-  timerStart: number;
-};
-type Props = {
+type StoreProps = {
   currentTime: number;
+};
+
+type DispatchProps = {
   updateTimer: (newTime: number) => void;
   resetTimer: () => void;
+  resetLogs: () => void;
 };
 
-class App extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      timerStart: 0
-    };
-  }
-  timer!: ReturnType<typeof setTimeout>;
-  render() {
-    return (
-      <div className="container">
-        <div className="stopWatch">
-          <Timer />
-          <SplitTimer />
-          <Actions
-            handleStart={this.startTimer}
-            handleStop={this.stopTimer}
-            handleReset={this.resetTimer}
-          />
-          <LogTable />
-        </div>
-      </div>
-    );
-  }
-  startTimer = () => {
-    const { currentTime } = this.props;
-    this.setState({
-      timerStart: Date.now() - currentTime
-    });
-    this.timer = setInterval(() => {
-      const { updateTimer } = this.props;
-      const { timerStart } = this.state;
-      updateTimer(Date.now() - timerStart);
+type Props = StoreProps & DispatchProps;
+let timer!: ReturnType<typeof setTimeout>;
+
+const App = (props: Props) => {
+  const timerStartRef = useRef(0);
+
+  const startTimer = () => {
+    const { currentTime } = props;
+    timerStartRef.current = Date.now() - currentTime;
+
+    timer = setInterval(() => {
+      const { updateTimer } = props;
+      updateTimer(Date.now() - timerStartRef.current);
     }, 1);
   };
 
-  stopTimer = () => {
-    clearInterval(this.timer);
+  const stopTimer = () => {
+    clearInterval(timer);
   };
 
-  resetTimer = () => {
-    const { resetTimer } = this.props;
+  const resetTheTimer = () => {
+    const { resetTimer, resetLogs } = props;
     resetTimer();
+    resetLogs();
   };
-}
 
-const mapStateToProps = ({ timer: { currentTime } }) => ({
+  return (
+    <div className="container">
+      <div className="stopWatch">
+        <Timer />
+        <SplitTimer />
+        <Actions
+          handleStart={startTimer}
+          handleStop={stopTimer}
+          handleReset={resetTheTimer}
+        />
+        <LogTable />
+      </div>
+    </div>
+  );
+};
+
+const mapStateToProps = ({
+  timer: { currentTime }
+}: ReduxStoreState): StoreProps => ({
   currentTime
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch: any): DispatchProps => {
   return bindActionCreators(
     {
       updateTimer,
-      resetTimer
+      resetTimer,
+      resetLogs
     },
     dispatch
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect<StoreProps, DispatchProps, ReduxStoreState>(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
