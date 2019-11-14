@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿# Stop Watch
+=======
+# Stop Watch
+>>>>>>> baf7b20c89f11d011f2932b08f09e04c22f759f8
 # Functionality:
 # Start
 Click event on start button will start stopwatch from the current time.
@@ -16,4 +20,8 @@ User click on split button to split the event at that time.
 This event add an entery in the log table with split event and with the time of event triggred.
 
 # Reset
+<<<<<<< HEAD
 User click on reset button to bring stopwatch to initial state.
+=======
+User click on reset button to bring stopwatch to initial state.
+>>>>>>> baf7b20c89f11d011f2932b08f09e04c22f759f8
