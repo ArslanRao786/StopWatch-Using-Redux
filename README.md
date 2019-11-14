@@ -1,6 +1,6 @@
 
 # Stop Watch
->>>>>>> baf7b20c89f11d011f2932b08f09e04c22f759f8
+
 # Functionality:
 # Start
 Click event on start button will start stopwatch from the current time.
